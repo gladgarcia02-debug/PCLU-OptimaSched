@@ -69,9 +69,13 @@ app.use(notFound);
 app.use(errorHandler);
 
 // ── Boot ───────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n  PCLU OptimaSched running → http://localhost:${PORT}`);
-  console.log(`  Environment: ${process.env.NODE_ENV || 'development'}\n`);
-});
+// Vercel imports this module and calls the exported handler directly —
+// it never runs server.js as the entry script, so guard listen() to it.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n  PCLU OptimaSched running → http://localhost:${PORT}`);
+    console.log(`  Environment: ${process.env.NODE_ENV || 'development'}\n`);
+  });
+}
 
 module.exports = app;
