@@ -1,0 +1,38 @@
+<div class="auth-wrap">
+  <aside class="auth-aside">
+    <div class="brand">
+      <span class="mark">OS</span>
+      <span class="name">OptimaSched<small>PCLU</small></span>
+    </div>
+    <div class="pitch">
+      <h2>Build a clash-free week, one block at a time.</h2>
+      <p>OptimaSched checks every new class against rooms, sections and instructors before it lands on the grid.</p>
+    </div>
+    <div class="feat">
+      <div><span class="dot"></span><span><b>Live conflict detection.</b> No two classes share a room or a teacher by accident.</span></div>
+      <div><span class="dot"></span><span><b>Slot suggestions.</b> When a block clashes, get the next open times instantly.</span></div>
+      <div><span class="dot"></span><span><b>One visual timetable.</b> The whole week, colour-coded, at a glance.</span></div>
+    </div>
+  </aside>
+
+  <main class="auth-main">
+    <div class="auth-card">
+      <h1>Sign in</h1>
+      <p class="sub">Welcome back. Enter your credentials to continue.</p>
+      <%- include('../partials/flash') %>
+      <form action="/auth/login" method="POST" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email"
+                 value="<%= values.email || '' %>" placeholder="you@pclu.edu.ph" required />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Sign in</button>
+      </form>
+      <p class="switch">No account yet? <a href="/auth/register">Create one</a></p>
+    </div>
+  </main>
+</div>

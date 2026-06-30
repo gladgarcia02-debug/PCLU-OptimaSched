@@ -1,0 +1,49 @@
+<div class="auth-wrap">
+  <aside class="auth-aside">
+    <div class="brand">
+      <span class="mark">OS</span>
+      <span class="name">OptimaSched<small>PCLU</small></span>
+    </div>
+    <div class="pitch">
+      <h2>Schedule with confidence, not spreadsheets.</h2>
+      <p>Create an account to start planning the academic week on a single, conflict-aware timetable.</p>
+    </div>
+    <div class="feat">
+      <div><span class="dot"></span><span><b>Rooms, courses, sections, instructors</b> — all in one place.</span></div>
+      <div><span class="dot"></span><span>The <b>first account</b> created becomes the administrator.</span></div>
+    </div>
+  </aside>
+
+  <main class="auth-main">
+    <div class="auth-card">
+      <h1>Create account</h1>
+      <p class="sub">It takes less than a minute.</p>
+
+      <% if (errors && errors.length) { %>
+        <ul class="field-errors">
+          <% errors.forEach(function (e) { %><li><%= e.msg %></li><% }) %>
+        </ul>
+      <% } %>
+
+      <form action="/auth/register" method="POST" novalidate>
+        <div class="field">
+          <label for="full_name">Full name</label>
+          <input type="text" id="full_name" name="full_name"
+                 value="<%= values.full_name || '' %>" placeholder="Juan Dela Cruz" required />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email"
+                 value="<%= values.email || '' %>" placeholder="you@pclu.edu.ph" required />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="new-password" required />
+          <p class="hint">At least 8 characters.</p>
+        </div>
+        <button type="submit" class="btn btn-primary">Create account</button>
+      </form>
+      <p class="switch">Already registered? <a href="/auth/login">Sign in</a></p>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,43 @@
+<%
+  const isEdit = instructor && instructor.id;
+  const i = instructor || {};
+  function sel(a,b){ return String(a)===String(b)?'selected':''; }
+%>
+<div class="page-actions">
+  <p class="lede"><%= isEdit ? 'Update this instructor record.' : 'Add a new faculty member.' %></p>
+  <a class="btn btn-ghost" href="/instructors">← Back</a>
+</div>
+<div class="panel" style="max-width:680px;">
+  <div class="panel-head"><h2><%= isEdit ? 'Edit instructor' : 'New instructor' %></h2></div>
+  <div class="panel-body">
+    <form action="<%= action %>" method="POST" novalidate>
+      <div class="form-grid">
+        <div class="field full">
+          <label for="full_name">Full name</label>
+          <input id="full_name" name="full_name" value="<%= i.full_name || '' %>" required />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" value="<%= i.email || '' %>" />
+        </div>
+        <div class="field">
+          <label for="department_id">Department</label>
+          <select id="department_id" name="department_id">
+            <option value="">Unassigned</option>
+            <% departments.forEach(function (d) { %>
+              <option value="<%= d.id %>" <%= sel(d.id, i.department_id) %>><%= d.code %> — <%= d.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="field">
+          <label for="max_hours_per_week">Max hours / week</label>
+          <input type="number" min="1" max="40" id="max_hours_per_week" name="max_hours_per_week" value="<%= i.max_hours_per_week || 24 %>" />
+        </div>
+      </div>
+      <div class="form-actions">
+        <a class="btn btn-ghost" href="/instructors">Cancel</a>
+        <button class="btn btn-primary" type="submit"><%= isEdit ? 'Save changes' : 'Add instructor' %></button>
+      </div>
+    </form>
+  </div>
+</div>

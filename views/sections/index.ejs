@@ -1,0 +1,34 @@
+<div class="page-actions">
+  <p class="lede">A section is one offering of a course for a term, taught by an instructor. Sections are what you place on the timetable.</p>
+  <a class="btn btn-primary" href="/sections/new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add section</a>
+</div>
+<div class="panel">
+  <% if (sections.length === 0) { %>
+    <div class="tt-empty">No sections yet. <a href="/sections/new">Add one →</a></div>
+  <% } else { %>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Course</th><th>Section</th><th>Instructor</th><th>Term</th><th>Year</th><th></th></tr></thead>
+        <tbody>
+          <% sections.forEach(function (s) { %>
+            <tr>
+              <td><span class="code"><%= s.course_code %></span> <span style="color:var(--muted)"><%= s.course_title %></span></td>
+              <td><b><%= s.section_name %></b></td>
+              <td><%= s.instructor_name || '—' %></td>
+              <td><%= s.semester %></td>
+              <td class="mono"><%= s.school_year %></td>
+              <td>
+                <div class="row-actions">
+                  <a class="btn btn-ghost btn-sm" href="/sections/<%= s.id %>/edit">Edit</a>
+                  <form action="/sections/<%= s.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Remove this section?');">
+                    <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>

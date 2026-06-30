@@ -1,0 +1,56 @@
+<%
+  const isEdit = section && section.id;
+  const s = section || {};
+  function sel(a,b){ return String(a)===String(b)?'selected':''; }
+%>
+<div class="page-actions">
+  <p class="lede"><%= isEdit ? 'Update this section.' : 'Create a course offering for a term.' %></p>
+  <a class="btn btn-ghost" href="/sections">← Back</a>
+</div>
+<div class="panel" style="max-width:760px;">
+  <div class="panel-head"><h2><%= isEdit ? 'Edit section' : 'New section' %></h2></div>
+  <div class="panel-body">
+    <form action="<%= action %>" method="POST" novalidate>
+      <div class="form-grid">
+        <div class="field full">
+          <label for="course_id">Course</label>
+          <select id="course_id" name="course_id" required>
+            <option value="">Select a course…</option>
+            <% courses.forEach(function (c) { %>
+              <option value="<%= c.id %>" <%= sel(c.id, s.course_id) %>><%= c.code %> — <%= c.title %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="field">
+          <label for="section_name">Section name</label>
+          <input id="section_name" name="section_name" value="<%= s.section_name || '' %>" placeholder="BSCS-1A" required />
+        </div>
+        <div class="field">
+          <label for="instructor_id">Instructor</label>
+          <select id="instructor_id" name="instructor_id">
+            <option value="">Unassigned</option>
+            <% instructors.forEach(function (i) { %>
+              <option value="<%= i.id %>" <%= sel(i.id, s.instructor_id) %>><%= i.full_name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="field">
+          <label for="semester">Semester</label>
+          <select id="semester" name="semester">
+            <% ['1st','2nd','Summer'].forEach(function (t) { %>
+              <option value="<%= t %>" <%= sel(t, s.semester) %>><%= t %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="field">
+          <label for="school_year">School year</label>
+          <input id="school_year" name="school_year" value="<%= s.school_year || '2025-2026' %>" placeholder="2025-2026" />
+        </div>
+      </div>
+      <div class="form-actions">
+        <a class="btn btn-ghost" href="/sections">Cancel</a>
+        <button class="btn btn-primary" type="submit"><%= isEdit ? 'Save changes' : 'Add section' %></button>
+      </div>
+    </form>
+  </div>
+</div>

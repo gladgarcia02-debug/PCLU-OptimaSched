@@ -1,0 +1,12 @@
+<%
+  // This view may render with or without a logged-in user; the layout
+  // shows the shell only when currentUser exists.
+%>
+<div class="error-page">
+  <div>
+    <div class="code"><%= status %></div>
+    <h1><%= title %></h1>
+    <p><%= message %></p>
+    <a class="btn btn-primary" href="/">Back to safety</a>
+  </div>
+</div>

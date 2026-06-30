@@ -1,0 +1,103 @@
+<%
+  const isEdit = schedule && schedule.id;
+  function sel(a, b) { return String(a) === String(b) ? 'selected' : ''; }
+  const s = schedule || {};
+%>
+
+<div class="page-actions">
+  <p class="lede">Pick a section, room, day and time. Use <b>Check for conflicts</b> to validate against the live timetable before saving.</p>
+  <a class="btn btn-ghost" href="/schedules">← Back to timetable</a>
+</div>
+
+<% if (reasons && reasons.length) { %>
+  <div class="conflict">
+    <h3>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      This block can't be saved yet
+    </h3>
+    <ul>
+      <% reasons.forEach(function (r) { %><li><%= r %></li><% }) %>
+    </ul>
+    <% if (suggestions && suggestions.length) { %>
+      <p style="font-size:13px; color:#7E2610; margin:10px 0 0;">Next open slots for this section &amp; room:</p>
+      <div class="suggest-list">
+        <% suggestions.forEach(function (g) { %>
+          <button type="button" class="suggest-chip"
+                  data-day="<%= g.day_of_week %>" data-start="<%= g.start_time %>" data-end="<%= g.end_time %>">
+            <%= g.day_label.slice(0,3) %> <%= g.start_time %>–<%= g.end_time %>
+          </button>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+<% } %>
+
+<div class="panel" style="max-width:760px;">
+  <div class="panel-head"><h2><%= isEdit ? 'Edit timetable block' : 'New timetable block' %></h2></div>
+  <div class="panel-body">
+    <form id="schedule-form" action="<%= action %>" method="POST" novalidate
+          data-exclude="<%= isEdit ? schedule.id : '' %>">
+      <div class="form-grid">
+        <div class="field full">
+          <label for="section_id">Section</label>
+          <select id="section_id" name="section_id" required>
+            <option value="">Select a section…</option>
+            <% sections.forEach(function (sec) { %>
+              <option value="<%= sec.id %>" <%= sel(sec.id, s.section_id) %>>
+                <%= sec.course_code %> · <%= sec.section_name %><%= sec.instructor_name ? ' — ' + sec.instructor_name : '' %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="room_id">Room</label>
+          <select id="room_id" name="room_id" required>
+            <option value="">Select a room…</option>
+            <% rooms.forEach(function (r) { %>
+              <option value="<%= r.id %>" <%= sel(r.id, s.room_id) %>><%= r.name %> (cap <%= r.capacity %>)</option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="day_of_week">Day</label>
+          <select id="day_of_week" name="day_of_week" required>
+            <% days.forEach(function (d) { %>
+              <option value="<%= d.value %>" <%= sel(d.value, s.day_of_week) %>><%= d.label %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="start_time">Start time</label>
+          <input type="time" id="start_time" name="start_time" step="900"
+                 value="<%= s.start_time ? String(s.start_time).slice(0,5) : '08:00' %>" required />
+        </div>
+
+        <div class="field">
+          <label for="end_time">End time</label>
+          <input type="time" id="end_time" name="end_time" step="900"
+                 value="<%= s.end_time ? String(s.end_time).slice(0,5) : '09:30' %>" required />
+        </div>
+      </div>
+
+      <div id="check-result" class="check-result"></div>
+
+      <div class="form-actions">
+        <button type="button" id="check-btn" class="btn btn-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          Check for conflicts
+        </button>
+        <button type="submit" class="btn btn-primary"><%= isEdit ? 'Save changes' : 'Add to timetable' %></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<% if (isEdit) { %>
+  <form action="/schedules/<%= schedule.id %>?_method=DELETE" method="POST" style="max-width:760px; margin-top:14px;"
+        onsubmit="return confirm('Remove this block from the timetable?');">
+    <button type="submit" class="btn btn-danger btn-sm">Remove this block</button>
+  </form>
+<% } %>

@@ -1,0 +1,33 @@
+<div class="page-actions">
+  <p class="lede">Physical and online spaces classes can be assigned to. Room conflicts are checked against the timetable automatically.</p>
+  <a class="btn btn-primary" href="/rooms/new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add room</a>
+</div>
+<div class="panel">
+  <% if (rooms.length === 0) { %>
+    <div class="tt-empty">No rooms yet. <a href="/rooms/new">Add one →</a></div>
+  <% } else { %>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Name</th><th>Building</th><th>Capacity</th><th>Type</th><th></th></tr></thead>
+        <tbody>
+          <% rooms.forEach(function (r) { %>
+            <tr>
+              <td class="code"><%= r.name %></td>
+              <td><%= r.building || '—' %></td>
+              <td class="mono"><%= r.capacity %></td>
+              <td><span class="tag tag-<%= r.room_type %>"><%= r.room_type %></span></td>
+              <td>
+                <div class="row-actions">
+                  <a class="btn btn-ghost btn-sm" href="/rooms/<%= r.id %>/edit">Edit</a>
+                  <form action="/rooms/<%= r.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Remove <%= r.name %>?');">
+                    <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>

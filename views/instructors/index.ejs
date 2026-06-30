@@ -1,0 +1,36 @@
+<div class="page-actions">
+  <p class="lede">Faculty members available for assignment to sections. Weekly hour caps feed future load checks.</p>
+  <a class="btn btn-primary" href="/instructors/new">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add instructor
+  </a>
+</div>
+
+<div class="panel">
+  <% if (instructors.length === 0) { %>
+    <div class="tt-empty">No instructors yet. <a href="/instructors/new">Add one →</a></div>
+  <% } else { %>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Max hrs/wk</th><th></th></tr></thead>
+        <tbody>
+          <% instructors.forEach(function (i) { %>
+            <tr>
+              <td><b><%= i.full_name %></b></td>
+              <td><%= i.email || '—' %></td>
+              <td><%= i.department_code || '—' %></td>
+              <td class="mono"><%= i.max_hours_per_week %></td>
+              <td>
+                <div class="row-actions">
+                  <a class="btn btn-ghost btn-sm" href="/instructors/<%= i.id %>/edit">Edit</a>
+                  <form action="/instructors/<%= i.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Remove <%= i.full_name %>?');">
+                    <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>

@@ -1,0 +1,78 @@
+<%
+  const maxDay = Math.max(1, ...perDay.map(d => d.count));
+  const dayNames = ['', 'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+%>
+
+<div class="stat-grid">
+  <div class="stat"><div class="n mono"><%= stats.schedules %></div><div class="k">Timetable blocks</div></div>
+  <div class="stat"><div class="n mono"><%= stats.sections %></div><div class="k">Sections</div></div>
+  <div class="stat"><div class="n mono"><%= stats.courses %></div><div class="k">Courses</div></div>
+  <div class="stat"><div class="n mono"><%= stats.instructors %></div><div class="k">Instructors</div></div>
+  <div class="stat"><div class="n mono"><%= stats.rooms %></div><div class="k">Rooms</div></div>
+</div>
+
+<div class="two-col">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Recent timetable activity</h2>
+      <a class="btn btn-ghost btn-sm" href="/schedules">Open timetable</a>
+    </div>
+    <div class="panel-body" style="padding:0;">
+      <% if (recent.length === 0) { %>
+        <div class="tt-empty">No classes scheduled yet. <a href="/schedules/new">Add the first block →</a></div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Course</th><th>Section</th><th>Day</th><th>Time</th><th>Room</th><th>Instructor</th></tr></thead>
+            <tbody>
+              <% recent.forEach(function (s) { %>
+                <tr>
+                  <td class="code"><%= s.course_code %></td>
+                  <td><%= s.section_name %></td>
+                  <td><%= dayNames[s.day_of_week] %></td>
+                  <td class="mono"><%= String(s.start_time).slice(0,5) %>–<%= String(s.end_time).slice(0,5) %></td>
+                  <td><%= s.room_name %></td>
+                  <td><%= s.instructor_name || '—' %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:18px;">
+    <div class="panel">
+      <div class="panel-head"><h2>Load by weekday</h2></div>
+      <div class="panel-body">
+        <div class="dist">
+          <% perDay.forEach(function (d) { %>
+            <div class="dist-row">
+              <span class="day"><%= d.label %></span>
+              <span class="dist-track"><span class="dist-fill" style="width: <%= Math.round(d.count / maxDay * 100) %>%;"></span></span>
+              <span class="v"><%= d.count %></span>
+            </div>
+          <% }) %>
+        </div>
+        <p class="empty-hint" style="margin-top:12px;">
+          Busiest day: <b><%= busiest.count ? busiest.label : '—' %></b>
+        </p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>Upcoming holidays</h2></div>
+      <div class="panel-body">
+        <% if (holidays.length === 0) { %>
+          <p class="empty-hint">No upcoming holidays found (or the lookup is offline).</p>
+        <% } else { %>
+          <% holidays.forEach(function (h) { %>
+            <div class="holiday-item"><span><%= h.name %></span><span class="date"><%= h.date %></span></div>
+          <% }) %>
+          <p class="empty-hint" style="margin-top:8px;">Avoid scheduling classes on these dates.</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>

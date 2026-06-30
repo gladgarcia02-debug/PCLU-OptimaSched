@@ -1,0 +1,35 @@
+<div class="page-actions">
+  <p class="lede">Catalogue of courses offered. Each course can have many sections across terms.</p>
+  <a class="btn btn-primary" href="/courses/new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add course</a>
+</div>
+<div class="panel">
+  <% if (courses.length === 0) { %>
+    <div class="tt-empty">No courses yet. <a href="/courses/new">Add one →</a></div>
+  <% } else { %>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Code</th><th>Title</th><th>Units</th><th>Hrs/wk</th><th>Dept</th><th>Class size</th><th></th></tr></thead>
+        <tbody>
+          <% courses.forEach(function (c) { %>
+            <tr>
+              <td class="code"><%= c.code %></td>
+              <td><%= c.title %></td>
+              <td class="mono"><%= c.units %></td>
+              <td class="mono"><%= c.hours_per_week %></td>
+              <td><%= c.department_code || '—' %></td>
+              <td class="mono"><%= c.expected_students %></td>
+              <td>
+                <div class="row-actions">
+                  <a class="btn btn-ghost btn-sm" href="/courses/<%= c.id %>/edit">Edit</a>
+                  <form action="/courses/<%= c.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Remove <%= c.code %>?');">
+                    <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>

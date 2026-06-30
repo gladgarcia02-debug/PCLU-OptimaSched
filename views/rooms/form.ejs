@@ -1,0 +1,42 @@
+<%
+  const isEdit = room && room.id;
+  const r = room || {};
+  function sel(a,b){ return String(a)===String(b)?'selected':''; }
+%>
+<div class="page-actions">
+  <p class="lede"><%= isEdit ? 'Update this room.' : 'Add a teaching space.' %></p>
+  <a class="btn btn-ghost" href="/rooms">← Back</a>
+</div>
+<div class="panel" style="max-width:680px;">
+  <div class="panel-head"><h2><%= isEdit ? 'Edit room' : 'New room' %></h2></div>
+  <div class="panel-body">
+    <form action="<%= action %>" method="POST" novalidate>
+      <div class="form-grid">
+        <div class="field">
+          <label for="name">Room name / code</label>
+          <input id="name" name="name" value="<%= r.name || '' %>" placeholder="LH-201" required />
+        </div>
+        <div class="field">
+          <label for="building">Building</label>
+          <input id="building" name="building" value="<%= r.building || '' %>" placeholder="Main Building" />
+        </div>
+        <div class="field">
+          <label for="capacity">Capacity</label>
+          <input type="number" min="1" id="capacity" name="capacity" value="<%= r.capacity || 40 %>" />
+        </div>
+        <div class="field">
+          <label for="room_type">Type</label>
+          <select id="room_type" name="room_type">
+            <% roomTypes.forEach(function (t) { %>
+              <option value="<%= t %>" <%= sel(t, r.room_type) %>><%= t.charAt(0).toUpperCase()+t.slice(1) %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <a class="btn btn-ghost" href="/rooms">Cancel</a>
+        <button class="btn btn-primary" type="submit"><%= isEdit ? 'Save changes' : 'Add room' %></button>
+      </div>
+    </form>
+  </div>
+</div>

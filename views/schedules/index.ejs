@@ -1,0 +1,68 @@
+<%
+  const ROW_H = 58;
+  // Stable colour per course code → distinct but muted hues.
+  const PALETTE = [
+    ['#0E6E72', '#E1F0F0'], ['#2A5A9E', '#E8F0FB'], ['#2C6B40', '#E6F4EA'],
+    ['#6B3F9E', '#F3E9FB'], ['#A6531C', '#FBEEE0'], ['#9C2F5E', '#FBE6EF'],
+    ['#1F6F8B', '#E2F1F5'], ['#7A6A1E', '#F6F2DC']
+  ];
+  function colorFor(code) {
+    let h = 0;
+    for (let i = 0; i < code.length; i++) h = (h * 31 + code.charCodeAt(i)) >>> 0;
+    return PALETTE[h % PALETTE.length];
+  }
+%>
+
+<div class="page-actions">
+  <p class="lede">The full academic week. Each block is colour-coded by course; click a block to edit it. New classes are checked for room, section and instructor conflicts before they are saved.</p>
+  <a class="btn btn-primary" href="/schedules/new">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+    Add block
+  </a>
+</div>
+
+<div class="timetable">
+  <% if (blocks.length === 0) { %>
+    <div class="tt-empty">The timetable is empty. <a href="/schedules/new">Schedule your first class →</a></div>
+  <% } else { %>
+    <div class="tt-scroll">
+      <div class="tt-grid">
+        <!-- header row -->
+        <div class="tt-head corner"><small>Time</small></div>
+        <% days.forEach(function (d) { %>
+          <div class="tt-head"><%= d.label %><small><%= d.label.slice(0,3) %></small></div>
+        <% }) %>
+
+        <!-- time gutter -->
+        <div class="tt-gutter">
+          <% gridRows.forEach(function (r) { %>
+            <div class="hr"><%= r.label %></div>
+          <% }) %>
+        </div>
+
+        <!-- day columns -->
+        <% days.forEach(function (d) { %>
+          <div class="tt-col <%= d.value >= 6 ? 'weekend' : '' %>" style="height: <%= gridRows.length * ROW_H %>px;">
+            <% blocks.filter(b => b.day_of_week === d.value).forEach(function (b) {
+                 const c = colorFor(b.course_code);
+                 const top = Math.max(0, b.topHours * ROW_H);
+                 const h = Math.max(28, b.spanHours * ROW_H - 6);
+            %>
+              <a class="tt-block" href="/schedules/<%= b.id %>/edit"
+                 style="top: <%= top %>px; height: <%= h %>px; --bl: <%= c[0] %>; --bl-soft: <%= c[1] %>;">
+                <span class="bc"><%= b.course_code %></span>
+                <span class="bs"><%= b.section_name %></span>
+                <span class="bt"><%= b.startLabel %>–<%= b.endLabel %></span>
+                <% if (h > 64) { %><span class="bm"><%= b.room_name %><%= b.instructor_name ? ' · ' + b.instructor_name.split(' ').slice(-1)[0] : '' %></span><% } %>
+              </a>
+            <% }) %>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+    <div class="tt-legend">
+      <span><i style="background:var(--primary)"></i> Click any block to edit or remove it</span>
+      <span><i style="background:var(--danger)"></i> Conflicts are blocked at save time</span>
+    </div>
+  <% } %>
+</div>
